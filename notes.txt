@@ -1,0 +1,9 @@
+ConnectionString = Server=localhost;Database=master;Trusted_Connection=True;
+
+EF Migration Commands
+	- Add-Migration "Initial Migration"
+	- Update-Database
+	
+Repository Pattern
+- To seperate data access layer from application
+	Decoupling, Consistency, Performance, Multiple Data sources
