@@ -1,6 +1,8 @@
 ﻿using CodePulse.API.Data;
 using CodePulse.API.Models.Domain;
+using CodePulse.API.Models.DTO;
 using CodePulse.API.Repositories.Interface;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodePulse.API.Repositories.Implementation
@@ -24,6 +26,26 @@ namespace CodePulse.API.Repositories.Implementation
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await dbContext.Categories.ToListAsync();
+        }
+
+        public async Task<Category?> GetById(Guid id)
+        {
+            return await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+           
+        }
+
+        public async Task<Category?> UpdateAsync(Category category)
+        {
+            var exisitingCategory = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == category.Id);
+
+            if (exisitingCategory != null)
+            {
+                dbContext.Entry(exisitingCategory).CurrentValues.SetValues(category);
+                await dbContext.SaveChangesAsync();
+                return category;
+
+            }
+            return null;
         }
     }
 }
