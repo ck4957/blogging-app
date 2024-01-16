@@ -13,11 +13,11 @@ namespace CodePulse.API.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
-        public CategoriesController(ICategoryRepository categoryRepository) {
+        public CategoriesController(ICategoryRepository categoryRepository)
+        {
             this._categoryRepository = categoryRepository;
         }
 
-        // 
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryRequestDto requestDto)
         {
@@ -82,7 +82,7 @@ namespace CodePulse.API.Controllers
         }
 
         [HttpPut]
-        [Route("{id: Guid}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> EditCategory([FromRoute] Guid id, [FromBody] UpdateCategoryRequestDto request)
         {
             // Convert DTO to Domain Model
@@ -107,6 +107,27 @@ namespace CodePulse.API.Controllers
                 UrlHandle = category.UrlHandle
             };
 
+            return Ok(response);
+
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
+        {
+            var category = await _categoryRepository.DeleteAsync(id);
+
+            if (category is null)
+            {
+                return NotFound();
+            }
+
+            var response = new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                UrlHandle = category.UrlHandle
+            };
             return Ok(response);
 
         }
