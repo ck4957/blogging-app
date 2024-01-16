@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using CodePulse.API.Models.Domain;
 using CodePulse.API.Models.DTO;
+using CodePulse.API.Repositories.Implementation;
 using CodePulse.API.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -193,6 +194,33 @@ namespace CodePulse.API.Controllers
 
             return Ok(response);
         }
-        
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteBlogPost([FromRoute] Guid id)
+        {
+            var blogPost = await blogPostRepository.DeleteAsync(id);
+
+            if (blogPost is null)
+            {
+                return NotFound();
+            }
+            // Convert Domain model to DTO
+            var response = new BlogPostDto
+            {
+                Id = blogPost.Id,
+                Title = blogPost.Title,
+                Author = blogPost.Author,
+                Content = blogPost.Content,
+                FeaturedImageUrl = blogPost.FeaturedImageUrl,
+                PublishedDate = blogPost.PublishedDate,
+                ShortDescription = blogPost.ShortDescription,
+                UrlHandle = blogPost.UrlHandle,
+                IsVisible = blogPost.IsVisible
+            };
+            return Ok(response);
+        }
+
+
     }
 }
