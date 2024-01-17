@@ -39,12 +39,12 @@ export class AddBlogpostComponent implements OnInit, OnDestroy {
     this.categories$ = this.categoryService.getAllCategories();
   }
 
-  openImageSelector() {
-    throw new Error('Method not implemented.');
+  openImageSelector(): void {
+    this.isImageSelectorVisible = true;
   }
 
-  closeImageSelector() {
-    throw new Error('Method not implemented.');
+  closeImageSelector() : void {
+    this.isImageSelectorVisible = false;
   }
 
   onFormSubmit() {
