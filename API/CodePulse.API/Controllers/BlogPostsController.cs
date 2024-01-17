@@ -21,6 +21,7 @@ namespace CodePulse.API.Controllers
             this.categoryRepository = categoryRepository;
         }
 
+        // POST: {apibaseurl}/api/blogposts
         [HttpPost]
         public async Task<IActionResult> CreateBlogPost([FromBody] CreateBlogPostRequestDto request)
         {
@@ -74,6 +75,7 @@ namespace CodePulse.API.Controllers
             return Ok(response);
         }
 
+        // GET: {apibaseurl}/api/blogposts
         [HttpGet]
         public async Task<IActionResult> GetAllBlogPosts()
         {
@@ -105,6 +107,7 @@ namespace CodePulse.API.Controllers
             return Ok(response);
         }
 
+        // GET: {apiBaseUrl}/api/blogposts/{id}
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetBlogPostById([FromRoute] Guid id)
@@ -135,6 +138,41 @@ namespace CodePulse.API.Controllers
             };
             return Ok(response);
 
+        }
+
+        // GET: {apibaseurl}/api/blogPosts/{urlhandle}
+        [HttpGet]
+        [Route("{urlHandle}")]
+        public async Task<IActionResult> GetBlogPostByUrlHandle([FromRoute] string urlHandle)
+        {
+            // Get blogpost details from repository
+            var blogPost = await blogPostRepository.GetByUrlHandleAsync(urlHandle);
+
+            if (blogPost is null)
+            {
+                return NotFound();
+            }
+            // Convert Domain Model to DTO
+            var response = new BlogPostDto
+            {
+                Id = blogPost.Id,
+                Author = blogPost.Author,
+                Content = blogPost.Content,
+                FeaturedImageUrl = blogPost.FeaturedImageUrl,
+                IsVisible = blogPost.IsVisible,
+                PublishedDate = blogPost.PublishedDate,
+                ShortDescription = blogPost.ShortDescription,
+                Title = blogPost.Title,
+                UrlHandle = blogPost.UrlHandle,
+                Categories = blogPost.Categories.Select(x => new CategoryDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
+            };
+
+            return Ok(response);
         }
 
         [HttpPut]
